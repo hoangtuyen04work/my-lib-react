@@ -1,0 +1,43 @@
+/* Đảm bảo rằng html và body chiếm toàn bộ chiều cao màn hình */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-books {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  
+  .main-content {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    position: relative;
+    flex-grow: 1;
+    overflow: auto;
+
+    .content-body {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow: auto;
+      transition: margin-left 0.3s ease;
+      /* Smooth transition */
+
+      &.sidebar-open {
+        margin-left: 200px;
+        /* Khoảng cách khi Sidebar mở */
+      }
+
+      &.sidebar-closed {
+        margin-left: 0;
+        /* Không khoảng cách khi Sidebar đóng */
+      }
+      
+    }
+
+  }
+
+}

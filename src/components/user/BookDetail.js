@@ -19,7 +19,6 @@ const BookDetail = () => {
   const [comment, setComment] = useState('');
   const [reviews, setReviews] = useState([]);
   const [borrowStatus, setBorrowStatus] = useState(false);
-  const [borrowId, setBorrowId] = useState();
   const [loading, setLoading] = useState(true); // Thêm trạng thái loading
   const [selectedRating, setSelectedRating] = useState(null); // Lưu đánh giá đã chọn
   const token = useSelector((state) => state.user.user.token);
@@ -78,7 +77,6 @@ const BookDetail = () => {
 
   const handleBorrow = async () => {
     try {
-      console.log(userId, id)
       const response = await borrowBook(token, userId, id);
       setBorrowStatus(response.data.data || false);
     } catch (error) {

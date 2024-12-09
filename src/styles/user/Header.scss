@@ -1,35 +1,37 @@
 .header {
-  background-color: #343a40; // Dark background color
+  background-color: #1f2937; // Đổi sang màu tối hiện đại hơn
   color: white;
-  padding: 1rem 2rem; // Adds padding around the header
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Adds a shadow effect
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   .logo {
-    font-size: 28px; // Increases the logo size
+    font-size: 1.8rem;
     font-weight: bold;
-    transition: color 0.3s; // Adds a color transition effect
     cursor: pointer;
+    color: #ffffff;
+    transition: color 0.3s ease;
 
     &:hover {
-      color: #f8f9fa; // Changes color on hover
+      color: #38bdf8; // Màu xanh sáng khi hover
     }
   }
 
   .category-select {
-    padding: 0.5rem;
-    border-radius: 4px; // Adds rounded corners
-    border: 1px solid #6c757d; // Border color
-    background-color: #495057; // Background color
-    color: white; // Text color
+    padding: 0.5rem 0.75rem;
+    border-radius: 5px;
+    border: 1px solid #4b5563;
+    background-color: #374151;
+    color: #ffffff;
     cursor: pointer;
+    transition: all 0.3s ease;
 
     &:focus {
-      outline: none; // Removes focus outline
-      border-color: #80bdff; // Border color on focus
-      background-color: #495057; // Background color on focus
+      outline: none;
+      border-color: #38bdf8;
+      background-color: #4b5563;
     }
   }
 
@@ -39,37 +41,33 @@
     position: relative;
 
     .search-bar {
-      width: 250px; // Sets search bar width
-      padding: 8px 12px;
-      border-radius: 5px; // Adds rounded corners
-      border: 1px solid #ddd; // Border color
-      background-color: #495057; // Background color
-      color: white; // Text color
-      margin-right: 10px; // Adjusts margin
-      transition: border-color 0.2s ease;
+      width: 300px;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      border: 1px solid #4b5563;
+      background-color: #1f2937;
+      color: #ffffff;
+      transition: border-color 0.3s ease;
 
       &:focus {
-        border-color: #007bff; // Border color on focus
-        outline: none; // Removes focus outline
+        border-color: #38bdf8;
+        outline: none;
       }
     }
 
     .search-btn {
-      background-color: transparent;
+      background: none;
       border: none;
       cursor: pointer;
       position: absolute;
       right: 10px;
       top: 50%;
       transform: translateY(-50%);
-      padding: 0;
+      color: #ffffff;
+      font-size: 1.2rem;
 
       &:hover {
-        color: #e8edf3; // Changes color on hover
-      }
-
-      .search-icon {
-        font-size: 1.5rem; // Sets icon size
+        color: #38bdf8;
       }
     }
   }
@@ -77,76 +75,49 @@
   .user-controls {
     display: flex;
     gap: 1rem;
-    align-items: center; // Aligns icons with other buttons
+    align-items: center;
 
     .notification-btn {
-      position: relative; // Positions notification count
+      position: relative;
       background: none;
-      border: 1px solid #6c757d; // Adds border
-      border-radius: 4px; // Adds rounded corners
+      border: 1px solid #4b5563;
+      border-radius: 5px;
+      padding: 0.5rem;
+      color: #ffffff;
       cursor: pointer;
-      color: white;
-      font-size: 1.5rem; // Sets icon size
-      padding: 0.5rem; // Adds padding
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
 
       &:hover {
-        color: #f8f9fa; // Changes color on hover
-        border-color: #f8f9fa; // Changes border color on hover
+        border-color: #38bdf8;
+        color: #38bdf8;
       }
 
       .notification-count {
         position: absolute;
         top: -5px;
-        right: -10px;
-        background-color: red;
+        right: -5px;
+        background-color: #ef4444;
         color: white;
         border-radius: 50%;
-        padding: 0.2rem 0.5rem;
-        font-size: 0.8rem;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
       }
     }
 
     .profile-btn, .logout-btn {
-      background-color: #6c757d;
-      color: white;
-      border: 1px solid #6c757d; // Adds border
-      border-radius: 4px; // Adds rounded corners
+      background-color: #4b5563;
+      color: #ffffff;
+      border: 1px solid #4b5563;
+      border-radius: 5px;
       padding: 0.5rem 1rem;
       cursor: pointer;
-      transition: background-color 0.3s, border-color 0.3s; // Adds transition effects
+      transition: background-color 0.3s ease, border-color 0.3s ease;
 
       &:hover {
-        background-color: #5a6268; // Changes background color on hover
-        border-color: #5a6268; // Changes border color on hover
+        background-color: #38bdf8;
+        border-color: #38bdf8;
       }
-    }
-
-    .notification-dropdown {
-      display: none;
-      position: absolute;
-      background-color: #343a40;
-      border: 1px solid #6c757d;
-      padding: 1rem;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-
-      div {
-        color: white;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #495057;
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        &:hover {
-          background-color: #495057; // Changes background color on hover
-        }
-      }
-    }
-
-    .notification-btn.active + .notification-dropdown {
-      display: block; // Displays dropdown when button is active
     }
   }
 }

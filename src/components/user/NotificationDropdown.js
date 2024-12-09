@@ -1,17 +1,42 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 // NotificationDropdown.js
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import '../../styles/user/NotificationDropdown.scss';
+import { numberNotifications } from '../../redux/action/userAction';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+const NotificationDropdown = ({ isOpen }) => {
+  const dispatch = useDispatch();
 
-const NotificationDropdown = ({ notifications, isOpen }) => {
   const token = useSelector((state) => state.user.user.token);
   const userId = useSelector((state) => state.user.user.id);
-
+  const [notifications, setNotifications] = useState([]);
+  
   useEffect(() => {
-    // Placeholder for any additional logic when notifications update
-  }, [notifications]);
+    const socket = new SockJS('http://localhost:8087/notify/notify/websocket', null, {
+      withCredentials: true,
+    });
+    const client = new Client({
+      webSocketFactory: () => socket,
+      connectHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+      onConnect: () => {
+        client.subscribe(`/notify/receiver/${userId}`, (response) => {
+          const notificationReceive = JSON.parse(response.body);
+          setNotifications((prev) => [...prev, notificationReceive.data]);
+          dispatch(numberNotifications(notifications.length + 1))
+          console.log(notifications.length + 1)
+        });
+      },
+      onStompError: (frame) => {
+        console.error(`Broker error: ${frame.headers['message']}`, frame.body);
+      },
+    });
 
+    client.activate();
+    return () => client.deactivate();
+  }, [notifications])
   if (!isOpen) {
     return null;
   }
@@ -31,11 +56,6 @@ const NotificationDropdown = ({ notifications, isOpen }) => {
       )}
     </ul>
   );
-};
-
-NotificationDropdown.propTypes = {
-  notifications: PropTypes.array.isRequired,
-  isOpen: PropTypes.bool.isRequired,
 };
 
 export default NotificationDropdown;

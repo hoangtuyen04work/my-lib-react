@@ -1,10 +1,12 @@
 
 
-import { CREATE_USER, search} from '../action/userAction'
+import { CREATE_USER, numberNotifications, search} from '../action/userAction'
 import { LOGIN } from '../action/userAction'
 import { LOGOUT } from '../action/userAction'
 import { SEARCH } from '../action/userAction'
 import { OFF_SEARCH } from '../action/userAction'
+import { SET_NUMBER_NOTIFICATION } from '../action/userAction';
+
 const INITIAL_STATE = {
     user: {
         token: '',
@@ -21,13 +23,18 @@ const INITIAL_STATE = {
         isSearch: false,
         searchContent: ''
     },
+    numberNotifications: 0,
     isAuthenticated: false,
-
 }
 
 
 const userReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case SET_NUMBER_NOTIFICATION: 
+            return {
+                ...state,
+                numberNotifications: action?.payload
+            }
         case OFF_SEARCH:
             return {
                 ...state,
@@ -59,6 +66,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                     roles: action?.payload?.data?.data?.roles
                 },
                 isAuthenticated: true,
+                numberNotifications: 0,
                 search: {
                     isSearch: false,
                     searchContent: ''
@@ -79,6 +87,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                     roles: action?.payload?.data?.data?.roles
                 },
                 isAuthenticated: true,
+                numberNotifications: 0,
                 search: {
                     isSearch: false,
                     searchContent: ''
@@ -98,6 +107,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                     email: '',
                 },
                 isAuthenticated: false,
+                numberNotifications: 0,
                 search: {
                     isSearch: false,
                     searchContent: ''

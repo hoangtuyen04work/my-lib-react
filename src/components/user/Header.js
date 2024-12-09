@@ -4,24 +4,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Client } from '@stomp/stompjs';
 
 import NotificationDropdown from './NotificationDropdown';
 import '../../styles/user/Header.scss';
-import SockJS from 'sockjs-client';
+
 import { logout } from '../../service/authService';
 import { useSelector, useDispatch } from 'react-redux';
 import { doLogout, search, offSearch } from '../../redux/action/userAction';
+import { numberNotifications } from '../../redux/action/userAction';
 
-import { fetchAllBookType, getAllType } from '../../service/userApiService';
+import { fetchAllBookType } from '../../service/userApiService';
 const Header = ({ onCategoryChange }) => {
-  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchContent, setSearchContent] = useState('');
   const [listCategory, setListCategory] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [numberNotification, setNumberNotification] = useState(1);
+  const numberNotification = useSelector((state) => state.user.numberNotifications);
   const token = useSelector((state) => state.user.user.token);
   const refreshToken = useSelector((state) => state.user.user.refreshToken);
   const userId = useSelector((state) => state.user.user.id);
@@ -44,6 +43,9 @@ const Header = ({ onCategoryChange }) => {
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
+    if (isDropdownOpen === false) {
+      dispatch(numberNotifications(0))
+    }
   };
 
   const handleClick = () => {
@@ -72,33 +74,9 @@ const Header = ({ onCategoryChange }) => {
       }
     };
     getAllType();
+  }, [numberNotification]);
 
 
-
-    const socket = new SockJS('http://localhost:8087/notify/notify/websocket', null, {
-      withCredentials: true,
-    });
-
-    const client = new Client({
-      webSocketFactory: () => socket,
-      connectHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-      onConnect: () => {
-        client.subscribe(`/notify/receiver/${userId}`, (response) => {
-          const notificationReceive = JSON.parse(response.body);
-          console.log("data", notificationReceive.data)
-          setNotifications((prev) => [...prev, notificationReceive.data]);
-        });
-      },
-      onStompError: (frame) => {
-        console.error(`Broker error: ${frame.headers['message']}`, frame.body);
-      },
-    });
-
-    client.activate();
-    return () => client.deactivate();
-  }, []);
 
   return (
     <header className="header">
@@ -134,12 +112,12 @@ const Header = ({ onCategoryChange }) => {
       <div className="user-controls">
         <button className="notification-btn" onClick={toggleDropdown}>
           <FontAwesomeIcon icon={faBell} />
-          {numberNotification.length > 0 && (
-            <span className="notification-count">{numberNotification.length}</span>
+          {numberNotification > 0 && (
+            <span className="notification-count">{numberNotification}</span>
           )}
         </button>
 
-        <NotificationDropdown notifications={notifications}
+        <NotificationDropdown
           isOpen={isDropdownOpen}
         />
 

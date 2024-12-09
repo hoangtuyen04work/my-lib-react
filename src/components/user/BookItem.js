@@ -9,7 +9,6 @@ const BookItem = ({ book }) => {
   };
 
   const handleImageError = (e) => {
-    console.log(book)
     e.target.src = '/download.jpg'; // Đường dẫn đến ảnh placeholder
   };
 

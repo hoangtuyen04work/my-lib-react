@@ -3,67 +3,93 @@ import { useParams } from 'react-router-dom';
 import '../../styles/user/BookDetail.scss'
 import Header from './Header';
 import { useSelector } from 'react-redux';
-import {    returnBook,
+import {    
+  returnBook,
   borrowBook,
-  isRated,
+  isBorrowed,
   fetchBookInfo,
   fetchRating,
-  postRating} from '../../service/userApiService'
+  postRating 
+} from '../../service/userApiService';
+
 const BookDetail = () => {
   const { id } = useParams();
   const [book, setBook] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [reviews, setReviews] = useState([]);
-  const [borrowStatus, setBorrowStatus] = useState(false); 
+  const [borrowStatus, setBorrowStatus] = useState(false);
   const [borrowId, setBorrowId] = useState();
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [selectedRating, setSelectedRating] = useState(null); // Lưu đánh giá đã chọn
   const token = useSelector((state) => state.user.user.token);
   const userId = useSelector((state) => state.user.user.id);
-  const userName = useSelector((state)=>state.user.user.name)
-  useEffect(() => {
-    const getInfo = async () => {
-      const response = fetchBookInfo(token, id);
-      setBook(response.data.data);
-    };
+  const userName = useSelector((state) => state.user.user.name);
 
-    const getRatings = async () => {
-      const response = fetchRating(token, id)
+  const handleRatingChange = (star) => {
+    setRating(star);
+    setSelectedRating(star);
+  };
+
+  const getInfo = async () => {
+    try {
+      setLoading(true); // Bắt đầu loading
+      const response = await fetchBookInfo(token, id);
+      setBook(response.data.data);
+    } catch (error) {
+      console.error('Error fetching book info:', error);
+    }
+  };
+
+  const getRatings = async () => {
+    try {
+      const response = await fetchRating(token, id);
       setReviews(response.data.data.content);
-    };
-    
-    const checked = async () => {
-      const response = await isRated(token, userId, id);
+    } catch (error) {
+      console.error('Error fetching ratings:', error);
+    }
+  };
+
+  const checkBorrowed = async () => {
+    try {
+      const response = await isBorrowed(token, userId, id);
       setBorrowStatus(response.data.data);
+    } catch (error) {
+      console.error('Error checking borrow status:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await getInfo();
+        await getRatings();
+        await checkBorrowed();
+      } catch (error) {
+        console.error('Error during data fetching:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    getRatings();
-    getInfo();
-    checked();
-  }, [id]);
+  
+    fetchData();
+  }, []);
+  
 
   const handleBorrow = async () => {
     try {
-      const response = borrowBook(token, userId, id);
-
-      if (response.data.data) {
-        setBorrowStatus(true);
-      } else {
-        setBorrowStatus(false);
-      }
+      console.log(userId, id)
+      const response = await borrowBook(token, userId, id);
+      setBorrowStatus(response.data.data || false);
     } catch (error) {
       console.error('Error borrowing book:', error);
-      setBorrowStatus(false);
     }
   };
 
   const handleReturn = async () => {
     try {
-      const response = returnBook(token, userId, id);
-
-      if (response.data.data) {
-        setBorrowStatus(false);
-      } else {
-        console.error('Error returning book');
-      }
+      const response = await returnBook(token, userId, id);
+      if (response.data.data) setBorrowStatus(false);
     } catch (error) {
       console.error('Error returning book:', error);
     }
@@ -71,23 +97,29 @@ const BookDetail = () => {
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
-
     try {
-      const response = postRating(token, userId, id, rating, comment, userName)
-
+      const response = await postRating(token, userId, id, rating, comment, userName);
       if (response.data.data) {
-        setReviews([...reviews, { userId, rating, comment, userName }]);
-      } else {
-        console.error('Error submitting review');
+        const existingReviewIndex = reviews.findIndex((review) => review.userId === userId);
+        if (existingReviewIndex !== -1) {
+          const updatedReviews = [...reviews];
+          updatedReviews[existingReviewIndex] = { userId, userName, rating, comment };
+          setReviews(updatedReviews);
+        } else {
+          setReviews([...reviews, { userId, userName, rating, comment }]);
+        }
       }
     } catch (error) {
-      console.error('Error returning book:', error);
+      console.error('Error submitting review:', error);
     }
     setComment('');
     setRating(0);
+    setSelectedRating(null);
   };
 
-  if (!book) return <div>Loading...</div>;
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
 
   return (
     <div>
@@ -95,13 +127,12 @@ const BookDetail = () => {
       <div className="book-detail">
         <h1>{book.name}</h1>
         <div className="book-info">
-          <img src={book.imageUrl} alt={book.name} />
+          <img src={book.image} alt={book.name} />
           <div className="book-description">
             <p><strong>Author:</strong> {book.author}</p>
             <p><strong>Publication Date:</strong> {book.publicationDate}</p>
             <p><strong>Price:</strong> {book.price} VND</p>
             <p><strong>Description:</strong> {book.shortDescription}</p>
-            
             {borrowStatus ? (
               <button onClick={handleReturn}>Return Book</button>
             ) : (
@@ -123,7 +154,7 @@ const BookDetail = () => {
                     name="rating"
                     value={star}
                     checked={rating === star}
-                    onChange={() => setRating(star)}
+                    onChange={() => handleRatingChange(star)}
                   />
                   <label htmlFor={`star${star}`}>★</label>
                 </React.Fragment>
@@ -141,11 +172,17 @@ const BookDetail = () => {
           <button type="submit">Submit Review</button>
         </form>
 
+        {selectedRating && (
+          <div className="selected-rating">
+            You have selected {selectedRating} stars.
+          </div>
+        )}
+
         <h3>Reviews</h3>
         <ul>
           {reviews.map((review, index) => (
             <li key={index}>
-              <strong>Rating:</strong> {review.rating} ★<br/>
+              <strong>Rating:</strong> {review.rating} ★<br />
               <strong>{review.userName}:</strong> {review.comment} <br />
             </li>
           ))}

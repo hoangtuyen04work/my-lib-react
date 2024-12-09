@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -12,14 +11,14 @@ import '../../styles/user/Header.scss';
 import SockJS from 'sockjs-client';
 import { logout } from '../../service/authService';
 import { useSelector, useDispatch } from 'react-redux';
-import { doLogout } from '../../redux/action/userAction';
+import { doLogout, search, offSearch } from '../../redux/action/userAction';
 
-import { fetchAllBookType } from '../../service/userApiService';
-const Header = ({ onCategoryChange, onSearchChange }) => {
+import { fetchAllBookType, getAllType } from '../../service/userApiService';
+const Header = ({ onCategoryChange }) => {
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const [search, setSearch] = useState('');
+  const [searchContent, setSearchContent] = useState('');
   const [listCategory, setListCategory] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [numberNotification, setNumberNotification] = useState(1);
@@ -28,21 +27,10 @@ const Header = ({ onCategoryChange, onSearchChange }) => {
   const userId = useSelector((state) => state.user.user.id);
   const dispatch = useDispatch();
 
-  // Handle search submit when the search icon is clicked
   const handleSearchSubmit = async () => {
-    if (search.trim() !== "") {
-      try {
-        const response = await axios.get(`http://localhost:8888/lib/search/search?name=${search}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        onSearchChange(response.data.data.content); // Pass search results to parent component
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-      }
+    if (searchContent.trim() !== "") {
+      dispatch(search(searchContent));
     } else {
-      onSearchChange([]); // Reset search results when search input is empty
     }
   };
 
@@ -51,7 +39,7 @@ const Header = ({ onCategoryChange, onSearchChange }) => {
   };
 
   const handleSearchInputChange = (e) => {
-    setSearch(e.target.value);
+    setSearchContent(e.target.value);
   };
 
   const toggleDropdown = () => {
@@ -59,6 +47,7 @@ const Header = ({ onCategoryChange, onSearchChange }) => {
   };
 
   const handleClick = () => {
+    dispatch(offSearch());
     if (location.pathname === '/home') {
       window.location.reload();
     } else {
@@ -77,12 +66,14 @@ const Header = ({ onCategoryChange, onSearchChange }) => {
     const getAllType = async () => {
       try {
         const response = await fetchAllBookType(token);
-        setListCategory(response.data);
+        setListCategory(response.data.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
     getAllType();
+
+
 
     const socket = new SockJS('http://localhost:8087/notify/notify/websocket', null, {
       withCredentials: true,
@@ -131,7 +122,7 @@ const Header = ({ onCategoryChange, onSearchChange }) => {
         <input
           type="text"
           placeholder="Search books..."
-          value={search}
+          value={searchContent}
           onChange={handleSearchInputChange}
           className="search-bar"
         />

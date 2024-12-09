@@ -19,23 +19,23 @@ api.interceptors.response.use(function (response) {
 }, async function (error) {
     switch (error.status) {
         case 401:
-            const refreshToken = store.getState().user.user.refreshToken; // Lấy từ Redux
-            if (isRefreshToken === false) {
-                isRefreshToken = true;
-                const response = await refresh(refreshToken);
-                console.log(response);
-                if (response.data.code === 200) {
-                    store.dispatch({
-                        type: 'LOGIN',
-                        payload: response,
-                    });
-                    isRefreshToken = false;
-                    window.location.reload();
-                }
-                else {
-                    store.dispatch({type: "LOGOUT"})
-                }
-            }
+            // const refreshToken = store.getState().user.user.refreshToken; // Lấy từ Redux
+            // if (isRefreshToken === false) {
+            //     isRefreshToken = true;
+            //     const response = await refresh(refreshToken);
+            //     console.log(response);
+            //     if (response.data.code === 200) {
+            //         store.dispatch({
+            //             type: 'LOGIN',
+            //             payload: response,
+            //         });
+            //         isRefreshToken = false;
+            //         window.location.reload();
+            //     }
+            //     else {
+            //         store.dispatch({type: "LOGOUT"})
+            //     }
+            // }
             break;
         case 403:
             console.error("Forbidden: You do not have the necessary permissions.");

@@ -1,7 +1,21 @@
 export const CREATE_USER = 'CREATE_USER';
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
+export const SEARCH = "ON_SEARCH"
+export const OFF_SEARCH = "OFF_SEARCH"
 
+export const offSearch = () => {
+    return {
+        type: OFF_SEARCH,
+    };
+};
+
+export const search = (data) => {
+    return {
+        type: SEARCH,
+        payload: data
+    };
+};
 
 export const doSignup = (data) => {
     return {
@@ -23,3 +37,4 @@ export const doLogout = () => {
         type: LOGOUT,
     }
 }
+

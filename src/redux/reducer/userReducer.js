@@ -1,10 +1,10 @@
 
 
-import { CREATE_USER} from '../action/userAction'
+import { CREATE_USER, search} from '../action/userAction'
 import { LOGIN } from '../action/userAction'
 import { LOGOUT } from '../action/userAction'
-
-
+import { SEARCH } from '../action/userAction'
+import { OFF_SEARCH } from '../action/userAction'
 const INITIAL_STATE = {
     user: {
         token: '',
@@ -17,12 +17,33 @@ const INITIAL_STATE = {
         phone: '',
         email: '',
     },
+    search: {
+        isSearch: false,
+        searchContent: ''
+    },
     isAuthenticated: false,
+
 }
 
 
 const userReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case OFF_SEARCH:
+            return {
+                ...state,
+                search: {
+                    isSearch: false,
+                    searchContent: ''
+                }
+            }
+        case SEARCH:
+            return {
+                ...state,
+                search: {
+                    isSearch: true,
+                    searchContent: action?.payload
+                }
+            }
         case CREATE_USER:
             return {
                 ...state,
@@ -37,10 +58,13 @@ const userReducer = (state = INITIAL_STATE, action) => {
                     userId: action?.payload?.data?.data?.userId ,
                     roles: action?.payload?.data?.data?.roles
                 },
-                isAuthenticated: true
+                isAuthenticated: true,
+                search: {
+                    isSearch: false,
+                    searchContent: ''
+                }
             }
         case LOGIN:
-            console.log(action)
             return {
                 ...state,
                 user: {
@@ -54,7 +78,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
                     userId: action?.payload?.data?.data?.userId ,
                     roles: action?.payload?.data?.data?.roles
                 },
-                isAuthenticated : true
+                isAuthenticated: true,
+                search: {
+                    isSearch: false,
+                    searchContent: ''
+                }
             }
         case LOGOUT:
             return {
@@ -69,7 +97,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
                     phone: '',
                     email: '',
                 },
-                isAuthenticated : false
+                isAuthenticated: false,
+                search: {
+                    isSearch: false,
+                    searchContent: ''
+                }
             }
 
         default: return state;

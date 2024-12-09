@@ -9,8 +9,8 @@ const fetchBookDetailData = (token, id) => {
     });
 }
 
-const fetchBook = (token, category) => {
-    return axios.get(`/book/book/top?typeId=${category}`, {
+const fetchBook = (token, category, page, size) => {
+    return axios.get(`/book/book/top?typeId=${category}&page=${page}&size=${size}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -31,63 +31,72 @@ const postRating = (token, userId, bookId, rating, comment, userName) => {
         rating: rating,
         comment: comment,
         userName: userName
-    },
-        {
-            headers: {
+    }, {
+        headers: {
             Authorization: `Bearer ${token}`
         }
     })
 }
+
 const returnBook = (token, userId, id) => {
     return axios.put(`/borrow/return/${userId}/${id}`,
+        null,
         {
-            headers: {
+        headers: {
             Authorization: `Bearer ${token}`
         }
     })
 }
 const borrowBook = (token, userId, id) => {
     return axios.put(`/borrow/borrow/${userId}/${id}`,
+        null,
         {
-            headers: {
+        headers: {
             Authorization: `Bearer ${token}`
         }
     })
 }
 
-const isRated = (token,userId, bookId) => {
-    return axios.get(`/rating/rate/book?bookId=${bookId}`,
-        {
-            headers: {
+const isBorrowed = (token, userId, id) => {
+    return axios.get(`/borrow/check?userId=${userId}&bookId=${id}`, {
+        headers: {
             Authorization: `Bearer ${token}`
         }
     })
 }
 
-const fetchRating = (token, bookId) => {
-    return axios.get(`/rating/rate/book?bookId=${bookId}`,
-        {
-            headers: {
+const fetchRating = (token, id) => {
+    return axios.get(`/rating/rate/book?bookId=${id}`, {
+        headers: {
             Authorization: `Bearer ${token}`
         }
     })
 }
-const fetchBookInfo = (token, bookId) => {
-    return axios.get(`/book/book/${bookId}`,
-        {
-            headers: {
+
+const fetchBookInfo = (token, id) => {
+    return axios.get(`/book/book/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+}
+
+const searchBookByName = (token, name, page, size) => {
+    return axios.get(`/search/search?name=${name}&page=${page}&size=${size}`, {
+        headers: {
             Authorization: `Bearer ${token}`
         }
     })
 }
 
 export {
+    searchBookByName,
     fetchBookDetailData,
     fetchBook,
     fetchAllBookType,
     returnBook,
     borrowBook,
-    isRated,
+    isBorrowed,
     fetchBookInfo,
     fetchRating,
     postRating

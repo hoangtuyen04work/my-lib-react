@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/user/BookItem.scss'; // Giữ nguyên nếu cần style
-
 const BookItem = ({ book }) => {
   const navigate = useNavigate();
 
@@ -9,10 +8,19 @@ const BookItem = ({ book }) => {
     navigate(`/book/${book.id}`);
   };
 
+  const handleImageError = (e) => {
+    console.log(book)
+    e.target.src = '/download.jpg'; // Đường dẫn đến ảnh placeholder
+  };
+
   return (
     <div className="book-item" onClick={handleClick}>
       <div className="book-image-wrapper">
-        <img src={book.imageUrl} alt={book.title} />
+        <img 
+          src={book.image} 
+          alt={book.title} 
+          onError={handleImageError} 
+        />
       </div>
       <h3>{book.name}</h3>
       <p>Borrowed: {book.numberBorrowed}</p>

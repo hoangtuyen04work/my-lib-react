@@ -75,24 +75,38 @@
       display: flex;
       justify-content: space-around;
       margin-bottom: 20px;
-
+    
       input[type="radio"] {
         display: none;
       }
-
+    
       label {
         font-size: 2rem;
         color: #ddd;
         cursor: pointer;
         transition: color 0.2s;
-
+    
         &:hover,
-        &:hover ~ label,
-        input[type="radio"]:checked ~ label {
-          color: #f39c12;
+        &:hover ~ label {
+          color: #f39c12; /* Màu vàng sáng khi hover */
         }
       }
+    
+      /* Khi input được chọn */
+      input[type="radio"]:checked + label,
+      input[type="radio"]:checked + label ~ label {
+        color: #f39c12; /* Màu vàng sáng khi đã chọn */
+      }
     }
+    
+    .selected-rating {
+      font-size: 1.5rem;
+      color: #2c3e50;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    
+    
 
     textarea {
       width: 100%;

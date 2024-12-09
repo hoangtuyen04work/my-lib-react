@@ -4,7 +4,7 @@ import "../styles/admin/BookDetail.scss";
 import { fetchBookData , updateBook} from "../service/adminApiService";
 import {useSelector} from "react-redux";
 
-function BookDetail({ onSave }) {
+function BookDetailAdmin({ onSave }) {
   const { bookId } = useParams();
   const [bookData, setBookData] = useState(null); // Initial book data
   const [editableBook, setEditableBook] = useState(null); // Editable book data
@@ -199,4 +199,4 @@ function BookDetail({ onSave }) {
   );
 }
 
-export default BookDetail;
+export default BookDetailAdmin;

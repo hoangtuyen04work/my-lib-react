@@ -6,13 +6,13 @@
   h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: center; // Đảm bảo chữ luôn căn giữa
     color: #444;
   }
 
   .book-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); // Sắp xếp nhiều sách trên cùng một hàng
     gap: 20px;
     justify-items: center;
     align-items: stretch;
@@ -23,4 +23,61 @@
       color: #888;
     }
   }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px; // Chiều cao tương ứng với danh sách sách
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #666;
+
+    &:after {
+      content: '';
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .pagination {
+    display: flex;
+    justify-content: center; // Căn giữa toàn bộ Pagination
+    align-items: center; // Đảm bảo các nút căn chỉnh theo chiều dọc
+    margin-top: 20px;
+  
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 0 5px; // Khoảng cách giữa các nút
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+  
+      &.active {
+        background-color: #0056b3;
+        font-weight: bold;
+      }
+    }
+  }
+  
 }

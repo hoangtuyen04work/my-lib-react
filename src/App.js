@@ -15,30 +15,41 @@ import AddBook from './components/admin/AddBook';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Routes dành cho admin */}
+<Router>
+  <Routes>
+    {/* Admin routes */}
+    <Route
+      path="/admin/home"
+      element={<ProtectedRoute requiredRole="ADMIN"><AdminHome /></ProtectedRoute>}
+    />
+    <Route
+      path="/admin/books"
+      element={<ProtectedRoute requiredRole="ADMIN"><AdminBooks /></ProtectedRoute>}
+    />
+    <Route
+      path="/admin/users"
+      element={<ProtectedRoute requiredRole="ADMIN"><AdminUsers /></ProtectedRoute>}
+    />
 
-        <Route path="/admin/book/add" element={<ProtectedRoute><AddBook /></ProtectedRoute>} />
-        <Route path="/admin/book/:id" element={<ProtectedRoute><AddBook /></ProtectedRoute>} />
-        <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
-        <Route path="/admin/books" element={<ProtectedRoute><AdminBooks /></ProtectedRoute>} />
-        <Route path="/admin/home" element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />
-        <Route path="/admin/book/:bookId" element={<ProtectedRoute><BookAdminDetail /></ProtectedRoute>} />
-        <Route path="/admin/user/:userId" element={<ProtectedRoute><UserAdminDetail /></ProtectedRoute>} />
+    {/* User routes */}
+    <Route
+      path="/home"
+      element={<ProtectedRoute requiredRole="USER"><Home /></ProtectedRoute>}
+    />
+    <Route
+      path="/profile"
+      element={<ProtectedRoute requiredRole="USER"><Profile /></ProtectedRoute>}
+    />
 
-        {/* Route chung */}
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    {/* Shared routes */}
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/" element={<Navigate to="/login" />} />
+  </Routes>
+</Router>
 
-        {/* Routes dành cho user */}
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/book/:id" element={<ProtectedRoute><BookDetail /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      </Routes>
-    </Router>
   );
 }
+
 
 export default App;

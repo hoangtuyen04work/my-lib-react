@@ -12,7 +12,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const roles = useSelector((state) => state.user.user.roles)
   const refreshToken = useSelector((state) => state.user.user.refreshToken)
 
   const handleLogin = async (e) => {
@@ -21,7 +20,8 @@ const Login = () => {
       const response = await login(email, password);
       dispatch(doLogin(response))
       if (response.data.code === 200) {
-        if (roles.some((role) => role.roleName === 'ADMIN')) {
+        console.log(response);
+        if (response.data.data.roles.some((role) => role.roleName === 'ADMIN')) {
           navigate('/admin/home');
         } else {
           navigate('/home');
@@ -40,7 +40,7 @@ const Login = () => {
         const response = await refresh(refreshToken);
         dispatch(doLogin(response))
         if (response.data.code === 200) {
-          if (roles.some((role) => role.roleName === 'ADMIN')) {
+          if (response.data.data.roles.some((role) => role.roleName === 'ADMIN')) {
             navigate('/admin/home');
           } else {
             navigate('/home');
